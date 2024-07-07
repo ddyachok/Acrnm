@@ -1,0 +1,17 @@
+/* 
+  Localizable.strings
+  Template
+
+  Created by Yuriy on 21.09.2022.
+  
+*/
+
+"APP_TITLE" = "Acrnm";
+
+"ACRONYM_COPYRIGHT" = "ACRONYM®";
+
+"COLLECTION_S24" = "SS24 COLLECTION";
+
+// MARK: - HOME -
+
+"HOME_VIEW_COLLECTION" = "VIEW COLLECTION";

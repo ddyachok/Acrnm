@@ -62,6 +62,7 @@ struct HomeView<VM: HomeViewModelType>: View {
                 topBarCartButton
             }
         }
+        .environmentObject(router)
     }
     
     private var backgroundImage: some View {

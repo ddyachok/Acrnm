@@ -5,6 +5,7 @@ import NerdzNetworking
 import NerdzEvents
 import IQKeyboardManagerSwift
 import Nuke
+import Routing
 
 final class RootCoordinator: ObservableObject {
 
@@ -94,6 +95,7 @@ final class RootCoordinator: ObservableObject {
     
     private func configureRepositories() {
         NerdzInject.shared.registerObject(AuthRepository(), for: AuthRepositoryType.self)
+        NerdzInject.shared.registerObject(AcrnmRepository(), for: AcrnmRepositoryType.self)
     }
     
     @MainActor

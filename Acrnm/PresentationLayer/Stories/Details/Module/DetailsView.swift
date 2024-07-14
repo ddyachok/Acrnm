@@ -22,7 +22,7 @@ struct DetailsView<VM: DetailsViewModelType>: View {
     
     // MARK: - Properties (private) -
     
-    @StateObject private var router: Router<HomeRoute> = .init()
+    @EnvironmentObject private var router: Router<HomeRoute>
     
     var body: some View {
         RoutingView(stack: $router.stack) {
@@ -46,8 +46,8 @@ struct DetailsView<VM: DetailsViewModelType>: View {
     }
 }
 
-struct DetailsView_Previews: PreviewProvider {
-    static var previews: some View {
-        DetailsView(viewModel: DetailsViewModel())
-    }
-}
+//struct DetailsView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        DetailsView(viewModel: DetailsViewModel())
+//    }
+//}

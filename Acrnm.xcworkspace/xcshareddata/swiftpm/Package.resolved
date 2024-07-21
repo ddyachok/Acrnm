@@ -1,5 +1,5 @@
 {
-  "originHash" : "16a098454b2c53fd6b39d0bf318cd25e99a7334902190c4f2fead6f0df82fdfc",
+  "originHash" : "51a84ab999feeb68fed9e3dddf8597f098f33961e88c033754fe3736a1cf2314",
   "pins" : [
     {
       "identity" : "iqkeyboardmanager",
@@ -89,6 +89,15 @@
       "state" : {
         "revision" : "2fb6ce731fd51f745f6cc3393462865b95c3df3c",
         "version" : "3.0.4"
+      }
+    },
+    {
+      "identity" : "url-image",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/dmytro-anokhin/url-image",
+      "state" : {
+        "revision" : "4042f955f1fdff00ced85545e1eecdbf969b5cd0",
+        "version" : "3.1.1"
       }
     }
   ],

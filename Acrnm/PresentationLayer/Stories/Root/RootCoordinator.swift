@@ -95,7 +95,6 @@ final class RootCoordinator: ObservableObject {
     
     private func configureRepositories() {
         NerdzInject.shared.registerObject(AuthRepository(), for: AuthRepositoryType.self)
-        NerdzInject.shared.registerObject(AcrnmRepository(), for: AcrnmRepositoryType.self)
     }
     
     @MainActor

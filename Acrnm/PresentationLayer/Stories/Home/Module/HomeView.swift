@@ -54,7 +54,6 @@ struct HomeView<VM: HomeViewModelType>: View {
                 backgroundImage
                 overlayContent
             }
-            .navigationTitle(L10n.appTitle)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 sideBarButton
@@ -87,7 +86,7 @@ struct HomeView<VM: HomeViewModelType>: View {
             Spacer()
                 .frame(height: 48)
             Button(action: {
-                router.navigate(to: .details)
+                router.navigate(to: .productsList)
             }) {
                 Text(L10n.homeViewCollection)
                     .font(FontFamily.BeVietnamPro.medium.swiftUIFont(size: 18))
@@ -109,7 +108,7 @@ struct HomeView<VM: HomeViewModelType>: View {
                 }
             }) {
                 Image(systemName: "line.3.horizontal")
-                    .foregroundColor(.white)
+                    .foregroundStyle(.smokyBlack)
             }
         }
     }

@@ -12,12 +12,13 @@ enum ProductCategoryType: CaseIterable {
     case showAll
     case ss24
     case fw2324
+    case ss22
 }
 
 typealias ProductAction = (ProductModel) -> Void
 
 //@Model
-final class ProductModel {
+final class ProductModel: Identifiable {
     var id: UUID
     var title: String
     var productDescription: String

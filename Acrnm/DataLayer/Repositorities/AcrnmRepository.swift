@@ -6,55 +6,61 @@
 //
 
 import Foundation
+import Combine
 
-protocol AcrnmRepositoryType {
-    func fetchListOfProducts(for category: ProductCategoryType) async throws -> [ProductModel]
-}
-
-class AcrnmRepository: AcrnmRepositoryType {
-    func fetchAllProductCategories() async throws -> [ProductCategoryType] {
-        do {
-            // Simulate request
-            
-            return [.showAll, .ss24, .fw2324]
-        }
-        catch {
-            throw RepositoryErrors(error)
+final class AcrnmRepository {
+    
+    static let shared = AcrnmRepository()
+    
+    func fetchAllProductCategories() -> Future<[ProductCategoryType], Error> {
+        return Future { promise in
+            // Simulate async operation
+            DispatchQueue.global().asyncAfter(deadline: .now() + 1) {
+                promise(.success([.showAll, .ss24, .fw2324]))
+            }
         }
     }
     
-    func fetchListOfProducts(for category: ProductCategoryType) async throws -> [ProductModel] {
-        do {
-            // Simulate request
-            
-            switch category {
-            case .showAll:
-                return [
-                    j118_ws_ex,
-                    sp38_m,
-                    j1wb_e,
-                    p59_e,
-                    s25_pr_d,
-                    j115_gt
-                ]
+    func fetchListOfProducts(for category: ProductCategoryType) -> Future<[ProductModel], Error> {
+        return Future { promise in
+            // Simulate async operation
+            DispatchQueue.global().asyncAfter(deadline: .now() + 1) { [weak self] in
+                guard let self else {
+                    return
+                }
                 
-            case .ss24:
-                return [
-                    j118_ws_ex,
-                    sp38_m,
-                    j1wb_e,
-                    p59_e,
-                    s25_pr_d
-                ]
-                
-            case .fw2324:
-                return [
-                    j115_gt
-                ]
+                switch category {
+                case .showAll:
+                    promise(.success([
+                        self.j118_ws_ex,
+                        self.sp38_m,
+                        self.j1wb_e,
+                        self.p59_e,
+                        self.s25_pr_d,
+                        self.j115_gt,
+                        self.ng4_ps,
+                        self.sac_j6010
+                    ]))
+                case .ss24:
+                    promise(.success([
+                        self.j118_ws_ex,
+                        self.sp38_m,
+                        self.j1wb_e,
+                        self.p59_e,
+                        self.s25_pr_d
+                    ]))
+                case .fw2324:
+                    promise(.success([
+                        self.j115_gt,
+                        self.ng4_ps
+                    ]))
+                    
+                case .ss22:
+                    promise(.success([
+                        self.sac_j6010
+                    ]))
+                }
             }
-        }
-        catch {
-            throw RepositoryErrors(error)
         }
     }
     
@@ -243,6 +249,62 @@ Built with enhanced Gore-Tex® Pro most breathable technology** to provide extre
             URL(string: "https://acrnm.com/rails/active_storage/representations/proxy/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBMWIwQVE9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--8184966b32c214a3e520f5a32cd30de3ba450939/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdDRG9MWm05eWJXRjBPZ2wzWldKd09oUnlaWE5wZW1WZmRHOWZiR2x0YVhSYkIya0NHQlZwQWhnVk9neGpiMjUyWlhKME93WT0iLCJleHAiOm51bGwsInB1ciI6InZhcmlhdGlvbiJ9fQ==--ea30ca935852b1885f58cc661c3d48e5801bfc95/J115-GT_1599_V2_Logo_Edit.jpg"),
             URL(string: "https://acrnm.com/rails/active_storage/representations/proxy/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBMWowQVE9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--a9d0fbbb3b6d123efb2c50ad4a22fbcfcbdc68c4/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdDRG9MWm05eWJXRjBPZ2wzWldKd09oUnlaWE5wZW1WZmRHOWZiR2x0YVhSYkIya0NHQlZwQWhnVk9neGpiMjUyWlhKME93WT0iLCJleHAiOm51bGwsInB1ciI6InZhcmlhdGlvbiJ9fQ==--ea30ca935852b1885f58cc661c3d48e5801bfc95/J115-GT_1607_V2_Logo_Edit.jpg"),
             URL(string: "https://acrnm.com/rails/active_storage/representations/proxy/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBM2lWQVE9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--04909573b0eab0ca2f0f06762defb62048b217da/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdDRG9MWm05eWJXRjBPZ2wzWldKd09oUnlaWE5wZW1WZmRHOWZiR2x0YVhSYkIya0NHQlZwQWhnVk9neGpiMjUyWlhKME93WT0iLCJleHAiOm51bGwsInB1ciI6InZhcmlhdGlvbiJ9fQ==--ea30ca935852b1885f58cc661c3d48e5801bfc95/J115-GT_1563.jpg")
+        ]
+    )
+    
+    let ng4_ps = ProductModel(
+        title: "NG4-PS",
+        productDescription: """
+Zipped up, NG4's unique ergonomic pattern fully encloses face, neck, and ears for warmth and concealment. Unzipped, it drapes around the neck like a scarf; the weight of the size 8 metal zipper naturally holding it in place. As unorthodox as it is effective. Gen 1.2 features a revised pattern and construction to decrease fabric waste, and an AuxZip ( M ) to ( M ) adapter zip, allowing it to be docked to both shell and liner garments for the first time.
+
+Can be worn inside/under jackets with large collars and hoods, or outside/over jackets with short/no collars.
+
+The very elastic and incredibly cozy Polartec® Powerstretch™ fabric radiates comfort across your entire microclimate.
+
+
+""",
+        images: [
+            URL(string: "https://acrnm.com/rails/active_storage/representations/proxy/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBeVB4QVE9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--1ebadc389e83db29620712c0f4383f1e8745509e/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdDRG9MWm05eWJXRjBPZ2wzWldKd09oUnlaWE5wZW1WZmRHOWZiR2x0YVhSYkIya0NHQlZwQWhnVk9neGpiMjUyWlhKME93WT0iLCJleHAiOm51bGwsInB1ciI6InZhcmlhdGlvbiJ9fQ==--ea30ca935852b1885f58cc661c3d48e5801bfc95/NG4-PS_2902.jpg"),
+            URL(string: "https://acrnm.com/rails/active_storage/representations/proxy/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBeW54QVE9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--15edeef23d12b43a6223ed2a3d9c5abf4640812f/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdDRG9MWm05eWJXRjBPZ2wzWldKd09oUnlaWE5wZW1WZmRHOWZiR2x0YVhSYkIya0NHQlZwQWhnVk9neGpiMjUyWlhKME93WT0iLCJleHAiOm51bGwsInB1ciI6InZhcmlhdGlvbiJ9fQ==--ea30ca935852b1885f58cc661c3d48e5801bfc95/NG4-PS_2934.jpg"),
+            URL(string: "https://acrnm.com/rails/active_storage/representations/proxy/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBeWp4QVE9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--5fb190d741b0cc2de4566adc253cb702e09cffc3/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdDRG9MWm05eWJXRjBPZ2wzWldKd09oUnlaWE5wZW1WZmRHOWZiR2x0YVhSYkIya0NHQlZwQWhnVk9neGpiMjUyWlhKME93WT0iLCJleHAiOm51bGwsInB1ciI6InZhcmlhdGlvbiJ9fQ==--ea30ca935852b1885f58cc661c3d48e5801bfc95/NG4-PS_2927.jpg"),
+            URL(string: "https://acrnm.com/rails/active_storage/representations/proxy/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBNXR3QWc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--411941692d69998a35c7f263898714b0a40133b5/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdDRG9MWm05eWJXRjBPZ2wzWldKd09oUnlaWE5wZW1WZmRHOWZiR2x0YVhSYkIya0NHQlZwQWhnVk9neGpiMjUyWlhKME93WT0iLCJleHAiOm51bGwsInB1ciI6InZhcmlhdGlvbiJ9fQ==--ea30ca935852b1885f58cc661c3d48e5801bfc95/NG4-PS_2917%20(1).jpg"),
+            URL(string: "https://acrnm.com/rails/active_storage/representations/proxy/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBemp4QVE9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--8ce74a5f719944b16db1d3e29a44d8da587629e1/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdDRG9MWm05eWJXRjBPZ2wzWldKd09oUnlaWE5wZW1WZmRHOWZiR2x0YVhSYkIya0NHQlZwQWhnVk9neGpiMjUyWlhKME93WT0iLCJleHAiOm51bGwsInB1ciI6InZhcmlhdGlvbiJ9fQ==--ea30ca935852b1885f58cc661c3d48e5801bfc95/NG4-PS_3022.jpg"),
+            URL(string: "https://acrnm.com/rails/active_storage/representations/proxy/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBeVR4QVE9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--231e77fb864f9e69eea4a600d686ca19a8ebe28a/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdDRG9MWm05eWJXRjBPZ2wzWldKd09oUnlaWE5wZW1WZmRHOWZiR2x0YVhSYkIya0NHQlZwQWhnVk9neGpiMjUyWlhKME93WT0iLCJleHAiOm51bGwsInB1ciI6InZhcmlhdGlvbiJ9fQ==--ea30ca935852b1885f58cc661c3d48e5801bfc95/NG4-PS_2912.jpg"),
+            URL(string: "https://acrnm.com/rails/active_storage/representations/proxy/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBeDd4QVE9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--d225cd828c717a02bf2d57bf9e75d1aaf46c103b/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdDRG9MWm05eWJXRjBPZ2wzWldKd09oUnlaWE5wZW1WZmRHOWZiR2x0YVhSYkIya0NHQlZwQWhnVk9neGpiMjUyWlhKME93WT0iLCJleHAiOm51bGwsInB1ciI6InZhcmlhdGlvbiJ9fQ==--ea30ca935852b1885f58cc661c3d48e5801bfc95/NG4-PS_2889.jpg"),
+            URL(string: "https://acrnm.com/rails/active_storage/representations/proxy/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBeC94QVE9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--c8677c0830e816e79ff5ab0ca9501b9a992c78d9/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdDRG9MWm05eWJXRjBPZ2wzWldKd09oUnlaWE5wZW1WZmRHOWZiR2x0YVhSYkIya0NHQlZwQWhnVk9neGpiMjUyWlhKME93WT0iLCJleHAiOm51bGwsInB1ciI6InZhcmlhdGlvbiJ9fQ==--ea30ca935852b1885f58cc661c3d48e5801bfc95/NG4-PS_2893.jpg"),
+            URL(string: "https://acrnm.com/rails/active_storage/representations/proxy/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBeUx4QVE9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--bb0a802df2b5a6c211287d7644630febca45dbcb/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdDRG9MWm05eWJXRjBPZ2wzWldKd09oUnlaWE5wZW1WZmRHOWZiR2x0YVhSYkIya0NHQlZwQWhnVk9neGpiMjUyWlhKME93WT0iLCJleHAiOm51bGwsInB1ciI6InZhcmlhdGlvbiJ9fQ==--ea30ca935852b1885f58cc661c3d48e5801bfc95/NG4-PS_2900.jpg"),
+            URL(string: "https://acrnm.com/rails/active_storage/representations/proxy/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBelB4QVE9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--599f659901d1f43dd0ef9815b0a7f05028006c51/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdDRG9MWm05eWJXRjBPZ2wzWldKd09oUnlaWE5wZW1WZmRHOWZiR2x0YVhSYkIya0NHQlZwQWhnVk9neGpiMjUyWlhKME93WT0iLCJleHAiOm51bGwsInB1ciI6InZhcmlhdGlvbiJ9fQ==--ea30ca935852b1885f58cc661c3d48e5801bfc95/NG4-PS_2986.jpg"),
+            URL(string: "https://acrnm.com/rails/active_storage/representations/proxy/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBelR4QVE9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--981807d08cbf04f62a6927a3038bfd8c8d05f15c/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdDRG9MWm05eWJXRjBPZ2wzWldKd09oUnlaWE5wZW1WZmRHOWZiR2x0YVhSYkIya0NHQlZwQWhnVk9neGpiMjUyWlhKME93WT0iLCJleHAiOm51bGwsInB1ciI6InZhcmlhdGlvbiJ9fQ==--ea30ca935852b1885f58cc661c3d48e5801bfc95/NG4-PS_2989.jpg"),
+            URL(string: "https://acrnm.com/rails/active_storage/representations/proxy/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBelh4QVE9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--81ec52df9c533b56be3a96996a760630409a707e/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdDRG9MWm05eWJXRjBPZ2wzWldKd09oUnlaWE5wZW1WZmRHOWZiR2x0YVhSYkIya0NHQlZwQWhnVk9neGpiMjUyWlhKME93WT0iLCJleHAiOm51bGwsInB1ciI6InZhcmlhdGlvbiJ9fQ==--ea30ca935852b1885f58cc661c3d48e5801bfc95/NG4-PS_2993.jpg"),
+            URL(string: "https://acrnm.com/rails/active_storage/representations/proxy/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBemZ4QVE9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--187b0409ead5fbef6f28f8ac8603a99e4bfe8a4d/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdDRG9MWm05eWJXRjBPZ2wzWldKd09oUnlaWE5wZW1WZmRHOWZiR2x0YVhSYkIya0NHQlZwQWhnVk9neGpiMjUyWlhKME93WT0iLCJleHAiOm51bGwsInB1ciI6InZhcmlhdGlvbiJ9fQ==--ea30ca935852b1885f58cc661c3d48e5801bfc95/NG4-PS_3016.jpg")
+        ]
+    )
+    
+    let sac_j6010 = ProductModel(
+        title: "SAC-J6010",
+        productDescription: """
+J6010 is sacai's aesthetic reframing of the Acronym J1W-GTPL design**. Following sacai methodology, it preserves hallmark attributes while fundamentally altering volume, silhouette, and typology. A trench coat and dress hybrid, it features a complex multilayer design. A vest-like top layer rests above a sleeveless coat-like under layer which descends to full dress length. Made in Japan by sacai.
+
+Shown in size: 1/S (Fa', 180 cm)
+
+[ Fits: STRAIGHT ]
+
+**sacai man 2022 Spring & Summer, women's 2022 Pre Spring collection
+
+Riffing on a theme of bonding, both as a metaphor for unity and as a technique for joining together two materials - two ideas that have been at the heart of sacai since the beginning. The collection by founder and designer, Chitose Abe, is a study on sealing together two apparently disparate notions to make a new form, bringing together characteristics born of different, sometimes opposing, origins.
+
+The ultimate expression of the idea comes courtesy of a collaboration with ACRONYM®, combining the designer Errolson Hugh's signature technical details with sacai fabrics and shapes for men and women, and, for the first time for ACRONYM®, a dress silhouette. Hugh says, 'Having known Chitose, and of course sacai, for many years, this collaboration is the ideal kind of crosspollination. And as I believe you can see from the results, it's a true blend of the philosophies of both brands, where the sum is greater than the parts.'
+
+
+""",
+        images: [
+            URL(string: "https://acrnm.com/rails/active_storage/representations/proxy/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBcXF1IiwiZXhwIjpudWxsLCJwdXIiOiJibG9iX2lkIn19--597fbb97a7074d631e465cc4d5f1c9d1fc600496/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdDRG9MWm05eWJXRjBPZ2wzWldKd09oUnlaWE5wZW1WZmRHOWZiR2x0YVhSYkIya0NHQlZwQWhnVk9neGpiMjUyWlhKME93WT0iLCJleHAiOm51bGwsInB1ciI6InZhcmlhdGlvbiJ9fQ==--ea30ca935852b1885f58cc661c3d48e5801bfc95/2022_01_17-19_ACRxSacai_Trench_Dress_BLK_0010.jpg"),
+            URL(string: "https://acrnm.com/rails/active_storage/representations/proxy/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBdUswIiwiZXhwIjpudWxsLCJwdXIiOiJibG9iX2lkIn19--29099a250214f94b7e3d1e685a89a6638e956bda/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdDRG9MWm05eWJXRjBPZ2wzWldKd09oUnlaWE5wZW1WZmRHOWZiR2x0YVhSYkIya0NHQlZwQWhnVk9neGpiMjUyWlhKME93WT0iLCJleHAiOm51bGwsInB1ciI6InZhcmlhdGlvbiJ9fQ==--ea30ca935852b1885f58cc661c3d48e5801bfc95/2022_01_17-19_ACRxSacai_Trench_Dress_Alpha_0003.jpg"),
+            URL(string: "https://acrnm.com/rails/active_storage/representations/proxy/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBdU8wIiwiZXhwIjpudWxsLCJwdXIiOiJibG9iX2lkIn19--f74ace1b5b04bbf77108268cdc1bc63bdbe1a483/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdDRG9MWm05eWJXRjBPZ2wzWldKd09oUnlaWE5wZW1WZmRHOWZiR2x0YVhSYkIya0NHQlZwQWhnVk9neGpiMjUyWlhKME93WT0iLCJleHAiOm51bGwsInB1ciI6InZhcmlhdGlvbiJ9fQ==--ea30ca935852b1885f58cc661c3d48e5801bfc95/2022_01_17-19_ACRxSacai_Trench_Dress_Alpha_0012.jpg"),
+            URL(string: "https://acrnm.com/rails/active_storage/representations/proxy/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBdVMwIiwiZXhwIjpudWxsLCJwdXIiOiJibG9iX2lkIn19--d534f112aef98a6820bd7eee419bae2586f30e98/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdDRG9MWm05eWJXRjBPZ2wzWldKd09oUnlaWE5wZW1WZmRHOWZiR2x0YVhSYkIya0NHQlZwQWhnVk9neGpiMjUyWlhKME93WT0iLCJleHAiOm51bGwsInB1ciI6InZhcmlhdGlvbiJ9fQ==--ea30ca935852b1885f58cc661c3d48e5801bfc95/2022_01_17-19_ACRxSacai_Trench_Dress_Alpha_0013.jpg"),
+            URL(string: "https://acrnm.com/rails/active_storage/representations/proxy/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBdVcwIiwiZXhwIjpudWxsLCJwdXIiOiJibG9iX2lkIn19--bf3b19a6bb74d7a51b46053feda4ff48f92738e7/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdDRG9MWm05eWJXRjBPZ2wzWldKd09oUnlaWE5wZW1WZmRHOWZiR2x0YVhSYkIya0NHQlZwQWhnVk9neGpiMjUyWlhKME93WT0iLCJleHAiOm51bGwsInB1ciI6InZhcmlhdGlvbiJ9fQ==--ea30ca935852b1885f58cc661c3d48e5801bfc95/2022_01_17-19_ACRxSacai_Trench_Dress_Alpha_0019.jpg"),
+            URL(string: "https://acrnm.com/rails/active_storage/representations/proxy/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBdlMwIiwiZXhwIjpudWxsLCJwdXIiOiJibG9iX2lkIn19--dc7b4f41a5977d109d275631c852d771ae0dde69/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdDRG9MWm05eWJXRjBPZ2wzWldKd09oUnlaWE5wZW1WZmRHOWZiR2x0YVhSYkIya0NHQlZwQWhnVk9neGpiMjUyWlhKME93WT0iLCJleHAiOm51bGwsInB1ciI6InZhcmlhdGlvbiJ9fQ==--ea30ca935852b1885f58cc661c3d48e5801bfc95/2022_01_17-19_ACRxSacai_Trench_Dress_Alpha_0114.jpg"),
+            URL(string: "https://acrnm.com/rails/active_storage/representations/proxy/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBck91IiwiZXhwIjpudWxsLCJwdXIiOiJibG9iX2lkIn19--12a49092d7d9947578a0d9a53d5e97d402e77bda/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdDRG9MWm05eWJXRjBPZ2wzWldKd09oUnlaWE5wZW1WZmRHOWZiR2x0YVhSYkIya0NHQlZwQWhnVk9neGpiMjUyWlhKME93WT0iLCJleHAiOm51bGwsInB1ciI6InZhcmlhdGlvbiJ9fQ==--ea30ca935852b1885f58cc661c3d48e5801bfc95/2022_01_17-19_ACRxSacai_Trench_Dress_BLK_0081.jpg")
         ]
     )
 }

@@ -9,7 +9,7 @@ import Foundation
 
 protocol ProductsListViewModelType: ObservableObject {
     var categories: [ProductCategoryType] { get }
-    var selectedCategory: ProductCategoryType? { get set }
+    var selectedCategory: ProductCategoryType { get set }
     
     var products: [ProductModel] { get }
     

@@ -21,6 +21,8 @@ internal enum L10n {
   internal static let collectionS24 = L10n.tr("Localizable", "COLLECTION_S24", fallback: "SS24 COLLECTION")
   /// VIEW COLLECTION
   internal static let homeViewCollection = L10n.tr("Localizable", "HOME_VIEW_COLLECTION", fallback: "VIEW COLLECTION")
+  /// UNIT
+  internal static let productsCollectionUnit = L10n.tr("Localizable", "PRODUCTS_COLLECTION_UNIT", fallback: "UNIT")
 }
 // swiftlint:enable explicit_type_interface function_parameter_count identifier_name line_length
 // swiftlint:enable nesting type_body_length type_name vertical_whitespace_opening_braces

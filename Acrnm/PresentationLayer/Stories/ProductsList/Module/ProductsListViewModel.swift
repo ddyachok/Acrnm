@@ -7,43 +7,48 @@
 
 import Combine
 import SwiftUI
-import NerdzInject
 
-final class ProductsListViewModel: ProductsListViewModelType {
-    
+final class ProductsListViewModel: ProductsListViewModelType, ObservableObject {
     
     // MARK: - Properties (public) -
     
-    var categories: [ProductCategoryType] = []
-    var selectedCategory: ProductCategoryType? = nil
-    
+    @Published var categories: [ProductCategoryType] = [.showAll, .ss24, .fw2324]
+    @Published var selectedCategory: ProductCategoryType = .showAll
     @Published var products: [ProductModel] = []
-        
+    
     // MARK: - Injects -
     
-    @ForceInject private var acrnmRepository: AcrnmRepository
+    private let acrnmRepository: AcrnmRepository
+    private var cancellables = Set<AnyCancellable>()
+    
+    // MARK: - Initialization -
+    
+    init(repository: AcrnmRepository = AcrnmRepository.shared) {
+        self.acrnmRepository = repository
+    }
     
     // MARK: - Methods (public) -
     
     func selectCategory(_ category: ProductCategoryType) {
         selectedCategory = category
+        getProducts()
     }
     
     func getProducts() {
-        Task { [weak self] in
-            guard let self else {
-                return
-            }
-            
-            guard let selectedCategoryType = self.selectedCategory else {
-                return
-            }
-            
-            guard let products = try? await self.acrnmRepository.fetchListOfProducts(for: selectedCategoryType) else {
-                return
-            }
-            
-            self.products = products
-        }
+        acrnmRepository.fetchListOfProducts(for: selectedCategory)
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .failure(let error):
+                    print("Error fetching products: \(error)")
+                    
+                case .finished:
+                    break
+                }
+            }, receiveValue: { [weak self] products in
+                self?.products = products
+            })
+            .store(in: &cancellables)
     }
 }
+

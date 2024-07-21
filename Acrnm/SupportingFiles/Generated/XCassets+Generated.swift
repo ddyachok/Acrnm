@@ -55,12 +55,14 @@ internal enum Asset {
     // swiftlint:enable trailing_comma
   }
   internal enum Icons {
+    internal static let arrowRightIcon = ImageAsset(name: "arrow-right-icon")
     internal static let homeIcon = ImageAsset(name: "home-icon")
     internal static let viewGridIcon = ImageAsset(name: "view-grid-icon")
 
     // swiftlint:disable trailing_comma
     @available(*, deprecated, message: "All values properties are now deprecated")
     internal static let allImages: [ImageAsset] = [
+      arrowRightIcon,
       homeIcon,
       viewGridIcon,
     ]

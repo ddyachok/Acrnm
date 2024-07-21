@@ -1,57 +1,47 @@
 //
-//  MainProductCell.swift
+//  SecondaryProductCell.swift
 //  Acrnm
 //
-//  Created by Danylo Dyachok on 10.07.2024.
+//  Created by Danylo Dyachok on 15.07.2024.
 //
 
 import SwiftUI
 import URLImage
 
-struct MainProductCell: View {
-    
-    // MARK: - Completions -
-    
-    var onProductSelected: ProductAction?
+struct SecondaryProductCell: View {
     
     // MARK: - Properties (public) -
     
     var product: ProductModel
     
+    // MARK: - Body -
+    
     var body: some View {
-        ZStack {
+        VStack(spacing: 0) {
             if let imageUrl = product.images.first {
                 URLImage(imageUrl ?? URL.picturesDirectory) { image in
                     image
                         .resizable()
                         .aspectRatio(contentMode: .fill)
-                        .frame(height: 350)
-                        .clipped()
+                        .frame(height: 224)
                 }
             }
             else {
                 Image(uiImage: .J_118_WS_EX_1)
                     .resizable()
                     .aspectRatio(contentMode: .fill)
-                    .frame(height: 350)
-                    .clipped()
+                    .frame(height: 224)
             }
             
-            VStack(alignment: .leading) {
-                Spacer()
-                Text(product.title)
-                    .font(FontFamily.BeVietnamPro.bold.swiftUIFont(fixedSize: 28))
-                    .foregroundColor(.white)
-                    .padding(.bottom)
-                    .multilineTextAlignment(.leading)
-            }
+            UnitCellView(product: product)
+                .frame(height: 44)
         }
     }
 }
 
-struct MainProductCell_Previews: PreviewProvider {
+struct SecondaryProductCell_Previews: PreviewProvider {
     static var previews: some View {
-        MainProductCell(product: j118_ws_ex)
+        SecondaryProductCell(product: j118_ws_ex)
     }
 }
 

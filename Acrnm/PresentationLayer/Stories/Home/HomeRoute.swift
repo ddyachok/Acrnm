@@ -10,11 +10,15 @@ import SwiftUI
 
 enum HomeRoute: Routable {
     case details
+    case productsList
     
     var body: some View {
         switch self {
         case .details:
             DetailsView(viewModel: DetailsViewModel())
+            
+        case .productsList:
+            ProductsListView(viewModel: ProductsListViewModel())
         }
     }
 }

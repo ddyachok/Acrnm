@@ -23,6 +23,12 @@ internal enum L10n {
   internal static let homeViewCollection = L10n.tr("Localizable", "HOME_VIEW_COLLECTION", fallback: "VIEW COLLECTION")
   /// UNIT
   internal static let productsCollectionUnit = L10n.tr("Localizable", "PRODUCTS_COLLECTION_UNIT", fallback: "UNIT")
+  /// Home
+  internal static let tabBarHomeTitle = L10n.tr("Localizable", "TAB_BAR_HOME_TITLE", fallback: "Home")
+  /// Items
+  internal static let tabBarItemsTitle = L10n.tr("Localizable", "TAB_BAR_ITEMS_TITLE", fallback: "Items")
+  /// Saved Items
+  internal static let tabBarSavedItemsTitle = L10n.tr("Localizable", "TAB_BAR_SAVED_ITEMS_TITLE", fallback: "Saved Items")
 }
 // swiftlint:enable explicit_type_interface function_parameter_count identifier_name line_length
 // swiftlint:enable nesting type_body_length type_name vertical_whitespace_opening_braces

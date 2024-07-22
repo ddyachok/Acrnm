@@ -9,44 +9,59 @@ import SwiftUI
 import Routing
 import NSideMenu
 
-// MARK: - Internal Types -
+// MARK: - Constants
 
-fileprivate enum Constants {
-    enum Sidebar {
-        static let minimalDragWidth: CGFloat = 100
-    }
+private enum Constants {
+    static let swipeThreshold: CGFloat = 100
 }
+
+// MARK: - HomeView
 
 struct HomeView<VM: HomeViewModelType>: View {
     
-    // MARK: - Properties (public) -
+    // MARK: - Properties (public)
     
     @StateObject var viewModel: VM
     
-    // MARK: - Properties (private) -
+    // MARK: - Properties (private)
     
     @StateObject private var router: Router<HomeRoute> = .init()
     @StateObject private var sideMenuOptions = NSideMenuOptions(style: .slideAside)
-        
-    // MARK: - Body -
+    @State private var selectedSideMenuOption: SideBarOption = .home
+    
+    // MARK: - Body
     
     var body: some View {
-        NSideMenuView(options: sideMenuOptions){
+        NSideMenuView(options: sideMenuOptions) {
             Menu {
-                SideBarView()
+                SideBarView(selectedOption: $selectedSideMenuOption, alignment: .leading)
             }
             Main {
-                mainView
-                    .onTapGesture {
-                        if sideMenuOptions.show == true {
-                            sideMenuOptions.toggleMenu()
-                        }
-                    }
+                contentView
+            }
+        }
+        .onChange(of: selectedSideMenuOption) { _, newOption in
+            handleSideMenuSelection(newOption)
+        }
+        .onChange(of: router.stack) { _, newStack in
+            if newStack.isEmpty {
+                selectedSideMenuOption = .home
             }
         }
     }
     
-    // MARK: - Views (private) -
+    // MARK: - Private Views
+    
+    private var contentView: some View {
+        GestureAwareView(onGesture: handleGesture) {
+            mainView
+                .onTapGesture {
+                    if sideMenuOptions.show {
+                        sideMenuOptions.toggleMenu()
+                    }
+                }
+        }
+    }
     
     private var mainView: some View {
         RoutingView(stack: $router.stack) {
@@ -83,30 +98,22 @@ struct HomeView<VM: HomeViewModelType>: View {
                 .font(FontFamily.BeVietnamPro.semiBold.swiftUIFont(size: 32))
                 .fontWeight(.bold)
                 .foregroundColor(Color(uiColor: Asset.Colors.Neutral.white.color))
-            Spacer()
-                .frame(height: 48)
-            Button(action: {
-                router.navigate(to: .productsList)
-            }) {
+            Spacer().frame(height: 48)
+            Button(action: { router.navigate(to: .productsList) }) {
                 Text(L10n.homeViewCollection)
                     .font(FontFamily.BeVietnamPro.medium.swiftUIFont(size: 18))
                     .foregroundColor(Color(uiColor: Asset.Colors.Neutral.white.color))
                     .padding()
                     .background(Color(uiColor: Asset.Colors.Neutral.smokyBlack.color))
             }
-            Spacer()
-                .frame(height: 40)
+            Spacer().frame(height: 40)
         }
         .padding()
     }
     
     private var sideBarButton: some ToolbarContent {
         ToolbarItem(placement: .topBarLeading) {
-            Button(action: {
-                DispatchQueue.main.async {
-                    sideMenuOptions.toggleMenu()
-                }
-            }) {
+            Button(action: toggleSideMenu) {
                 Image(systemName: "line.3.horizontal")
                     .foregroundStyle(.smokyBlack)
             }
@@ -115,9 +122,7 @@ struct HomeView<VM: HomeViewModelType>: View {
     
     private var topBarSearchButton: some ToolbarContent {
         ToolbarItem(placement: .topBarTrailing) {
-            Button(action: {
-                // Add search action
-            }) {
+            Button(action: searchAction) {
                 Image(systemName: "magnifyingglass")
                     .foregroundColor(.white)
             }
@@ -126,13 +131,63 @@ struct HomeView<VM: HomeViewModelType>: View {
     
     private var topBarCartButton: some ToolbarContent {
         ToolbarItem(placement: .topBarTrailing) {
-            Button(action: {
-                // Add cart action
-            }) {
+            Button(action: cartAction) {
                 Image(systemName: "cart")
                     .foregroundColor(.white)
             }
         }
+    }
+    
+    // MARK: - Methods (private)
+    
+    private func handleSideMenuSelection(_ option: SideBarOption) {
+        switch option {
+        case .home:
+            if sideMenuOptions.show {
+                sideMenuOptions.toggleMenu()
+            }
+            
+        case .items:
+            if sideMenuOptions.show {
+                sideMenuOptions.toggleMenu()
+            }
+            
+            router.replace(with: [.productsList])
+            
+        case .savedItems:
+            selectedSideMenuOption = .home
+            
+            if sideMenuOptions.show {
+                sideMenuOptions.toggleMenu()
+            }
+        }
+    }
+    
+    private func toggleSideMenu() {
+        DispatchQueue.main.async {
+            sideMenuOptions.toggleMenu()
+        }
+    }
+    
+    private func handleGesture(_ value: DragGesture.Value) {
+        if value.translation.width > Constants.swipeThreshold {
+            if !sideMenuOptions.show {
+                sideMenuOptions.toggleMenu()
+            }
+        }
+        else if value.translation.width < -Constants.swipeThreshold {
+            if sideMenuOptions.show {
+                sideMenuOptions.toggleMenu()
+            }
+        }
+    }
+    
+    private func searchAction() {
+        // Add search action here
+    }
+    
+    private func cartAction() {
+        // Add cart action here
     }
 }
 

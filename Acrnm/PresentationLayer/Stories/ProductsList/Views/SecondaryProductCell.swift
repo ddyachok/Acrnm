@@ -18,19 +18,24 @@ struct SecondaryProductCell: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            if let imageUrl = product.images.first {
-                URLImage(imageUrl ?? URL.picturesDirectory) { image in
-                    image
+            ZStack {
+                Color.white
+                    .frame(height: 224)
+                
+                if let imageUrl = product.images.first {
+                    URLImage(imageUrl ?? URL.picturesDirectory) { image in
+                        image
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(height: 224)
+                    }
+                }
+                else {
+                    Image(uiImage: .J_118_WS_EX_1)
                         .resizable()
                         .aspectRatio(contentMode: .fill)
                         .frame(height: 224)
                 }
-            }
-            else {
-                Image(uiImage: .J_118_WS_EX_1)
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(height: 224)
             }
             
             UnitCellView(product: product)

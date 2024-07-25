@@ -1,57 +1,114 @@
 //
-//  MainProductCell.swift
+//  ProductDetailsView.swift
 //  Acrnm
 //
-//  Created by Danylo Dyachok on 10.07.2024.
+//  Created by Danylo Dyachok on 04.07.2024.
 //
 
 import SwiftUI
+import Routing
 import URLImage
 
-struct MainProductCell: View {
-    
-    // MARK: - Completions -
-    
-    var onProductSelected: ProductAction?
-    
+// MARK: - ProductDetailsView
+
+struct ProductDetailsView<VM: ProductDetailsViewModelType>: View {
+
     // MARK: - Properties (public) -
     
-    var product: ProductModel
+    @StateObject var viewModel: VM
+    @ObservedObject var router: Router<HomeRoute>
+        
+    // MARK: - Body -
     
     var body: some View {
         ZStack {
-            if let imageUrl = product.images.first {
-                URLImage(imageUrl ?? URL.picturesDirectory) { image in
+            Color.smokyBlack.edgesIgnoringSafeArea(.all)
+            
+            ScrollView {
+                productImages
+                productDetails
+            }
+        }
+        .navigationBarBackButtonHidden(true)
+        .navigationBarItems(leading: backButton)
+        .toolbarColorScheme(.dark, for: .navigationBar)
+        .toolbarBackground(.visible, for: .navigationBar)
+    }
+    
+    // MARK: - Views (private) -
+        
+    private var productImages: some View {
+        TabView() {
+            ForEach(viewModel.product.images.compactMap { $0 }, id: \.self) { url in
+                URLImage(url) { image in
                     image
                         .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(height: 350)
-                        .clipped()
+                        .aspectRatio(contentMode: .fit)
+                        .scaledToFill()
+                }
+                .tag(url)
+            }
+        }
+        .tabViewStyle(.page(indexDisplayMode: .automatic))
+        .frame(height: 480)
+        .padding([.leading, .trailing], 32)
+        .padding(.bottom)
+    }
+    
+    private var productDetails: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            HStack {
+                Text(viewModel.product.title)
+                    .font(FontFamily.BeVietnamPro.medium.swiftUIFont(size: 20))
+                    .foregroundColor(Asset.Colors.Neutral.white.swiftUIColor)
+                
+                Spacer()
+                
+                ZStack {
+                    Color.white
+                        .frame(width: 80, height: 80)
+                    
+                    Button(action: {
+                        if viewModel.product.isSaved {
+                            viewModel.saveProduct()
+                        }
+                        else {
+                            viewModel.removeProduct()
+                        }
+                    }) {
+                        Image(systemName: viewModel.product.isSaved ? "plus.viewfinder" : "plus")
+                            .resizable()
+                            .contentTransition(.symbolEffect(.replace.byLayer.downUp))
+                            .frame(width: 40, height: 40)
+                    }
                 }
             }
-            else {
-                Image(uiImage: .J_118_WS_EX_1)
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(height: 350)
-                    .clipped()
-            }
             
-            VStack(alignment: .leading) {
-                Spacer()
-                Text(product.title)
-                    .font(FontFamily.BeVietnamPro.bold.swiftUIFont(fixedSize: 28))
-                    .foregroundColor(.white)
-                    .padding(.bottom)
-                    .multilineTextAlignment(.leading)
-            }
+            Text(viewModel.product.productDescription)
+                .font(FontFamily.BeVietnamPro.regular.swiftUIFont(size: 12))
+                .foregroundColor(Asset.Colors.Neutral.acrGray.swiftUIColor)
+            
+            Spacer()
+        }
+        .padding()
+        .background(.smokyBlack)
+    }
+    
+    private var backButton: some View {
+        Button(action: {
+            router.navigateBack()
+        }) {
+            Image(systemName: "chevron.left")
+                .foregroundColor(.white)
         }
     }
 }
 
-struct MainProductCell_Previews: PreviewProvider {
+// MARK: - Preview
+
+struct ProductDetailsView_Previews: PreviewProvider {
     static var previews: some View {
-        MainProductCell(product: j118_ws_ex)
+        ProductDetailsView(viewModel: ProductDetailsViewModel(product: j118_ws_ex), router: Router<HomeRoute>.init())
     }
 }
 

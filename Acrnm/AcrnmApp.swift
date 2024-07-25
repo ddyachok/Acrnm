@@ -6,14 +6,29 @@
 //
 
 import SwiftUI
+import Routing
 
 @main
 struct AcrnmApp: App {
-    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    @StateObject private var appRootManager = AppRootManager()
     
     var body: some Scene {
         WindowGroup {
-            RootView(coordinator: RootCoordinator(launchOptions: nil))
+            Group {
+                switch appRootManager.currentRoot {
+                case .home:
+                    HomeView(viewModel: HomeViewModel())
+                    
+                case .products:
+                    ProductsListView(viewModel: ProductsListViewModel(), router: Router<HomeRoute>.init())
+                    
+                case .savedProducts:
+                    SavedProductsView(viewModel: SavedProductsViewModel())
+                }
+            }
+            .environmentObject(appRootManager)
         }
     }
 }
+
+

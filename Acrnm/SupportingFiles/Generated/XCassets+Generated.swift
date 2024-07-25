@@ -31,6 +31,7 @@ internal enum Asset {
     internal enum Neutral {
       internal static let smokyBlack = ColorAsset(name: "SmokyBlack")
       internal static let white = ColorAsset(name: "White")
+      internal static let acrGray = ColorAsset(name: "acrGray")
       internal static let wdGray = ColorAsset(name: "wdGray")
     }
     internal enum Primary {
@@ -46,6 +47,7 @@ internal enum Asset {
       Background.wdBackground,
       Neutral.smokyBlack,
       Neutral.white,
+      Neutral.acrGray,
       Neutral.wdGray,
       Primary.wildBlueYonder,
       Primary.wdGreen,

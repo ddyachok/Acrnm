@@ -24,26 +24,30 @@ struct ProductsListView<VM: ProductsListViewModelType>: View {
     // MARK: - Properties (public)
     
     @StateObject var viewModel: VM
+    @ObservedObject var router: Router<HomeRoute>
     
     // MARK: - Properties (private)
     
-    @EnvironmentObject private var router: Router<HomeRoute>
+    @EnvironmentObject private var appRootManager: AppRootManager
+    
     @StateObject private var sideMenuOptions = NSideMenuOptions(style: .slideAside, side: .trailing)
     @State private var selectedSideMenuOption: SideBarOption = .items
     
     // MARK: - Body
     
     var body: some View {
-        NSideMenuView(options: sideMenuOptions) {
-            Menu {
-                SideBarView(selectedOption: $selectedSideMenuOption, alignment: .trailing)
+        RoutingView(stack: $router.stack) {
+            NSideMenuView(options: sideMenuOptions) {
+                Menu {
+                    SideBarView(selectedOption: $selectedSideMenuOption, alignment: .trailing)
+                }
+                Main {
+                    contentView
+                }
             }
-            Main {
-                contentView
+            .onChange(of: selectedSideMenuOption) { _, newOption in
+                handleSideMenuSelection(newOption)
             }
-        }
-        .onChange(of: selectedSideMenuOption) { _, newOption in
-            handleSideMenuSelection(newOption)
         }
     }
     
@@ -65,7 +69,7 @@ struct ProductsListView<VM: ProductsListViewModelType>: View {
                 }
                 .navigationBarBackButtonHidden(true)
                 .navigationBarItems(
-                    leading: backButton,
+                    leading: router.stack.isEmpty ? nil : backButton,
                     trailing: sideMenuButton
                 )
                 .toolbarColorScheme(.dark, for: .navigationBar)
@@ -107,7 +111,7 @@ struct ProductsListView<VM: ProductsListViewModelType>: View {
                         .padding(.top, 24)
                         .padding([.leading, .trailing], 28)
                         .onTapGesture {
-                            router.navigate(to: .details)
+                            router.navigate(to: .details(product: firstProduct, router: router))
                         }
                 }
                 
@@ -115,7 +119,7 @@ struct ProductsListView<VM: ProductsListViewModelType>: View {
                     ForEach(viewModel.products.dropFirst()) { product in
                         SecondaryProductCell(product: product)
                             .onTapGesture {
-                                router.navigate(to: .details)
+                                router.navigate(to: .details(product: product, router: router))
                             }
                     }
                 }
@@ -137,7 +141,14 @@ struct ProductsListView<VM: ProductsListViewModelType>: View {
                 sideMenuOptions.toggleMenu()
             }
             
-            router.navigateToRoot()
+            if router.stack.isEmpty {
+                appRootManager.currentRoot = .home
+            }
+            else {
+                router.navigateToRoot()
+            }
+            
+            selectedSideMenuOption = .home
             
         case .items:
             if sideMenuOptions.show {
@@ -145,11 +156,11 @@ struct ProductsListView<VM: ProductsListViewModelType>: View {
             }
             
         case .savedItems:
-            selectedSideMenuOption = .items
-            
             if sideMenuOptions.show {
                 sideMenuOptions.toggleMenu()
             }
+            
+            appRootManager.currentRoot = .savedProducts
         }
     }
     
@@ -171,6 +182,6 @@ struct ProductsListView<VM: ProductsListViewModelType>: View {
 struct ProductsListView_Previews: PreviewProvider {
     static var previews: some View {
         let viewModel = ProductsListViewModel()
-        ProductsListView(viewModel: viewModel)
+        ProductsListView(viewModel: viewModel, router: Router<HomeRoute>.init())
     }
 }

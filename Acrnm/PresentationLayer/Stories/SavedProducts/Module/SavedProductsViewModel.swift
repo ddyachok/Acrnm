@@ -1,19 +1,17 @@
 //
-//  ProductsListViewModel.swift
+//  SavedProductsViewModel.swift
 //  Acrnm
 //
-//  Created by Danylo Dyachok on 07.07.2024.
+//  Created by Danylo Dyachok on 25.07.2024.
 //
 
 import Combine
 import SwiftUI
 
-final class ProductsListViewModel: ProductsListViewModelType, ObservableObject {
+final class SavedProductsViewModel: SavedProductsViewModelType, ObservableObject {
     
     // MARK: - Properties (public) -
     
-    @Published var categories: [ProductCategoryType] = [.showAll, .ss24, .fw2324]
-    @Published var selectedCategory: ProductCategoryType = .showAll
     @Published var products: [ProductModel] = []
     
     // MARK: - Injects -
@@ -23,20 +21,15 @@ final class ProductsListViewModel: ProductsListViewModelType, ObservableObject {
     
     // MARK: - Initialization -
     
-    init(repository: AcrnmRepository = AcrnmRepository.shared, selectedCategory: ProductCategoryType = .showAll) {
+    init(repository: AcrnmRepository = AcrnmRepository.shared) {
         self.acrnmRepository = repository
-        self.selectedCategory = selectedCategory
     }
     
     // MARK: - Methods (public) -
     
-    func selectCategory(_ category: ProductCategoryType) {
-        selectedCategory = category
-        getProducts()
-    }
-    
-    func getProducts() {
-        acrnmRepository.fetchListOfProducts(for: selectedCategory)
+    @MainActor 
+    func getSavedProducts() {
+        acrnmRepository.fetchSavedProducts()
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { completion in
                 switch completion {
@@ -50,5 +43,15 @@ final class ProductsListViewModel: ProductsListViewModelType, ObservableObject {
                 self?.products = products
             })
             .store(in: &cancellables)
+    }
+    
+    func removeProduct(_ product: ProductModel) {
+        Task { [weak self] in
+            guard let self else {
+                return
+            }
+            
+            await acrnmRepository.removeProduct(product)
+        }
     }
 }

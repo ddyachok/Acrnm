@@ -7,10 +7,28 @@
 
 import Foundation
 import Combine
+import SwiftData
 
 final class AcrnmRepository {
     
+    // MARK: - Properties (public) -
+    
     static let shared = AcrnmRepository()
+    
+    // MARK: - Properties (private) -
+    
+    let swiftDataContainer: ModelContainer = {
+        let schema = Schema([ProductModel.self])
+        do {
+            let container = try ModelContainer(for: schema)
+            return container
+        }
+        catch {
+            fatalError("Failed to create ModelContainer")
+        }
+    }()
+        
+    // MARK: - Methods (public) -
     
     func fetchAllProductCategories() -> Future<[ProductCategoryType], Error> {
         return Future { promise in
@@ -64,10 +82,35 @@ final class AcrnmRepository {
         }
     }
     
+    @MainActor 
+    func saveProduct(_ product: ProductModel) {
+        swiftDataContainer.mainContext.insert(product)
+    }
+    
+    @MainActor
+    func removeProduct(_ product: ProductModel) {
+        swiftDataContainer.mainContext.delete(product)
+    }
+    
+    @MainActor
+    func fetchSavedProducts() -> Future<[ProductModel], Error> {
+        return Future { [weak self] promise in
+            guard let self else {
+                return
+            }
+            
+            do {
+                let products = try self.swiftDataContainer.mainContext.fetch(FetchDescriptor<ProductModel>())
+                promise(.success(products))
+            }
+            catch {
+                promise(.failure(error))
+            }
+        }
+    }
+    
     // MARK: - Mock data -
-    
-    // MARK: - (ProductModel) -
-    
+        
     let j118_ws_ex = ProductModel(
         title: "J118-WS-EX",
         productDescription: """

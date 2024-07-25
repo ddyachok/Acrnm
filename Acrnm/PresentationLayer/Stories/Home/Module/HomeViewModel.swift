@@ -9,7 +9,5 @@ import Combine
 import SwiftUI
 
 final class HomeViewModel: HomeViewModelType {
-    func showSidebar() {
-//        router.navigate(to: .details)
-    }
+    func showSidebar() {}
 }

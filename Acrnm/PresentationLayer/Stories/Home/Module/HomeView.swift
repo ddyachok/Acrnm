@@ -25,7 +25,9 @@ struct HomeView<VM: HomeViewModelType>: View {
     
     // MARK: - Properties (private)
     
+    @EnvironmentObject private var appRootManager: AppRootManager
     @StateObject private var router: Router<HomeRoute> = .init()
+    
     @StateObject private var sideMenuOptions = NSideMenuOptions(style: .slideAside)
     @State private var selectedSideMenuOption: SideBarOption = .home
     
@@ -72,8 +74,6 @@ struct HomeView<VM: HomeViewModelType>: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 sideBarButton
-                topBarSearchButton
-                topBarCartButton
             }
         }
         .environmentObject(router)
@@ -99,7 +99,7 @@ struct HomeView<VM: HomeViewModelType>: View {
                 .fontWeight(.bold)
                 .foregroundColor(Color(uiColor: Asset.Colors.Neutral.white.color))
             Spacer().frame(height: 48)
-            Button(action: { router.navigate(to: .productsList) }) {
+            Button(action: { router.navigate(to: .productsList(router: router)) }) {
                 Text(L10n.homeViewCollection)
                     .font(FontFamily.BeVietnamPro.medium.swiftUIFont(size: 18))
                     .foregroundColor(Color(uiColor: Asset.Colors.Neutral.white.color))
@@ -120,24 +120,6 @@ struct HomeView<VM: HomeViewModelType>: View {
         }
     }
     
-    private var topBarSearchButton: some ToolbarContent {
-        ToolbarItem(placement: .topBarTrailing) {
-            Button(action: searchAction) {
-                Image(systemName: "magnifyingglass")
-                    .foregroundColor(.white)
-            }
-        }
-    }
-    
-    private var topBarCartButton: some ToolbarContent {
-        ToolbarItem(placement: .topBarTrailing) {
-            Button(action: cartAction) {
-                Image(systemName: "cart")
-                    .foregroundColor(.white)
-            }
-        }
-    }
-    
     // MARK: - Methods (private)
     
     private func handleSideMenuSelection(_ option: SideBarOption) {
@@ -152,14 +134,14 @@ struct HomeView<VM: HomeViewModelType>: View {
                 sideMenuOptions.toggleMenu()
             }
             
-            router.replace(with: [.productsList])
+            appRootManager.currentRoot = .products
             
         case .savedItems:
-            selectedSideMenuOption = .home
-            
             if sideMenuOptions.show {
                 sideMenuOptions.toggleMenu()
             }
+            
+            appRootManager.currentRoot = .savedProducts
         }
     }
     
@@ -180,14 +162,6 @@ struct HomeView<VM: HomeViewModelType>: View {
                 sideMenuOptions.toggleMenu()
             }
         }
-    }
-    
-    private func searchAction() {
-        // Add search action here
-    }
-    
-    private func cartAction() {
-        // Add cart action here
     }
 }
 

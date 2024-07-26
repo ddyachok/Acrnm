@@ -9,7 +9,12 @@ import SwiftUI
 
 struct UnitCellView: View {
     
+    // MARK: - Properties (public) -
+    
     var product: ProductModel
+    var shouldRemove: Bool = false
+    
+    // MARK: - Body -
     
     var body: some View {
         HStack(spacing: 0) {
@@ -33,9 +38,17 @@ struct UnitCellView: View {
             ZStack {
                 Color(.smokyBlack)
                     .frame(width: 48, height: 48)
-                Image(.arrowRightIcon)
-                    .foregroundColor(Asset.Colors.Neutral.white.swiftUIColor)
-                    .padding()
+                
+                if shouldRemove {
+                    Image(.removeIcon)
+                        .foregroundColor(Asset.Colors.Neutral.white.swiftUIColor)
+                        .padding()
+                }
+                else {
+                    Image(.arrowRightIcon)
+                        .foregroundColor(Asset.Colors.Neutral.white.swiftUIColor)
+                        .padding()
+                }
             }
         }
         .background(Asset.Colors.Neutral.white.swiftUIColor)

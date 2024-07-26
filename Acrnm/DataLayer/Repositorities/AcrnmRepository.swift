@@ -31,7 +31,7 @@ final class AcrnmRepository {
     // MARK: - Methods (public) -
     
     func fetchAllProductCategories() -> Future<[ProductCategoryType], Error> {
-        return Future { promise in
+        Future { promise in
             // Simulate async operation
             DispatchQueue.global().asyncAfter(deadline: .now() + 1) {
                 promise(.success([.showAll, .ss24, .fw2324]))
@@ -40,7 +40,7 @@ final class AcrnmRepository {
     }
     
     func fetchListOfProducts(for category: ProductCategoryType) -> Future<[ProductModel], Error> {
-        return Future { promise in
+        Future { promise in
             // Simulate async operation
             DispatchQueue.global().asyncAfter(deadline: .now() + 1) { [weak self] in
                 guard let self else {
@@ -82,19 +82,53 @@ final class AcrnmRepository {
         }
     }
     
-    @MainActor 
-    func saveProduct(_ product: ProductModel) {
-        swiftDataContainer.mainContext.insert(product)
+    @MainActor
+    func saveProduct(_ product: ProductModel) -> Future<Void, Error> {
+        return Future { [weak self] promise in
+            guard let self else {
+                promise(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Self is nil"])))
+                return
+            }
+            
+            // TODO: - Update to id -
+            let productId = product.title
+            
+            let predicate = #Predicate<ProductModel> {
+                $0.title == productId
+            }
+            
+            let fetchRequest = FetchDescriptor<ProductModel>(
+                predicate: predicate
+            )
+            
+            do {
+                let existingProducts = try self.swiftDataContainer.mainContext.fetch(fetchRequest)
+                
+                if existingProducts.isEmpty {
+                    self.swiftDataContainer.mainContext.insert(product)
+                    promise(.success(()))
+                } 
+                else {
+                    promise(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Product already exists"])))
+                }
+            }
+            catch {
+                promise(.failure(error))
+            }
+        }
     }
     
     @MainActor
-    func removeProduct(_ product: ProductModel) {
-        swiftDataContainer.mainContext.delete(product)
+    func removeProduct(_ product: ProductModel) -> Future<Void, Error> {
+        Future { promise in
+            self.swiftDataContainer.mainContext.delete(product)
+            promise(.success(()))
+        }
     }
     
     @MainActor
     func fetchSavedProducts() -> Future<[ProductModel], Error> {
-        return Future { [weak self] promise in
+        Future { [weak self] promise in
             guard let self else {
                 return
             }
@@ -103,6 +137,32 @@ final class AcrnmRepository {
                 let products = try self.swiftDataContainer.mainContext.fetch(FetchDescriptor<ProductModel>())
                 promise(.success(products))
             }
+            catch {
+                promise(.failure(error))
+            }
+        }
+    }
+    
+    @MainActor
+    func fetchSavedProduct(by title: String) -> Future<ProductModel?, Error> {
+        Future { [weak self] promise in
+            guard let self else {
+                promise(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Self is nil"])))
+                return
+            }
+            
+            let predicate = #Predicate<ProductModel> {
+                $0.title == title
+            }
+            
+            let fetchRequest = FetchDescriptor<ProductModel>(
+                predicate: predicate
+            )
+            
+            do {
+                let products = try self.swiftDataContainer.mainContext.fetch(fetchRequest)
+                promise(.success(products.first))
+            } 
             catch {
                 promise(.failure(error))
             }

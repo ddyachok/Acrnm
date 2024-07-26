@@ -18,18 +18,14 @@ enum ProductCategoryType: CaseIterable {
 typealias ProductAction = (ProductModel) -> Void
 
 @Model
-final class ProductModel: Identifiable {
-    var id: UUID
+final class ProductModel {
     var title: String
     var productDescription: String
     var images: [URL?]
-    var isSaved: Bool
     
-    init(title: String, productDescription: String, images: [URL?], isSaved: Bool = false) {
-        self.id = UUID()
+    init(title: String, productDescription: String, images: [URL?]) {
         self.title = title
         self.productDescription = productDescription
         self.images = images
-        self.isSaved = isSaved
     }
 }

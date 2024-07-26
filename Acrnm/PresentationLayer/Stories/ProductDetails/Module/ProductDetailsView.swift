@@ -33,6 +33,9 @@ struct ProductDetailsView<VM: ProductDetailsViewModelType>: View {
         .navigationBarItems(leading: backButton)
         .toolbarColorScheme(.dark, for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
+        .onAppear {
+            viewModel.fetchLatestProductData()
+        }
     }
     
     // MARK: - Views (private) -
@@ -66,20 +69,21 @@ struct ProductDetailsView<VM: ProductDetailsViewModelType>: View {
                 
                 ZStack {
                     Color.white
-                        .frame(width: 80, height: 80)
+                        .frame(width: 50, height: 50)
                     
                     Button(action: {
-                        if viewModel.product.isSaved {
-                            viewModel.saveProduct()
-                        }
-                        else {
+                        if viewModel.isProductSaved {
                             viewModel.removeProduct()
                         }
+                        else {
+                            viewModel.saveProduct()
+                        }
                     }) {
-                        Image(systemName: viewModel.product.isSaved ? "plus.viewfinder" : "plus")
+                        Image(systemName: viewModel.isProductSaved ? "plus.viewfinder" : "plus")
                             .resizable()
+                            .foregroundStyle(.smokyBlack)
                             .contentTransition(.symbolEffect(.replace.byLayer.downUp))
-                            .frame(width: 40, height: 40)
+                            .frame(width: 25, height: 25)
                     }
                 }
             }
@@ -90,7 +94,8 @@ struct ProductDetailsView<VM: ProductDetailsViewModelType>: View {
             
             Spacer()
         }
-        .padding()
+        .padding([.leading, .trailing], 32)
+        .padding([.top, .bottom], 18)
         .background(.smokyBlack)
     }
     

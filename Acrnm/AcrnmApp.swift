@@ -23,7 +23,7 @@ struct AcrnmApp: App {
                     ProductsListView(viewModel: ProductsListViewModel(), router: Router<HomeRoute>.init())
                     
                 case .savedProducts:
-                    SavedProductsView(viewModel: SavedProductsViewModel())
+                    SavedProductsView(viewModel: SavedProductsViewModel(), router: Router<HomeRoute>.init())
                 }
             }
             .environmentObject(appRootManager)

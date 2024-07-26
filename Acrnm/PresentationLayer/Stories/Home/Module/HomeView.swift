@@ -45,6 +45,11 @@ struct HomeView<VM: HomeViewModelType>: View {
         .onChange(of: selectedSideMenuOption) { _, newOption in
             handleSideMenuSelection(newOption)
         }
+        .onChange(of: appRootManager.currentRoot) { _, newOption in
+            if newOption == .home {
+                selectedSideMenuOption = .home
+            }
+        }
         .onChange(of: router.stack) { _, newStack in
             if newStack.isEmpty {
                 selectedSideMenuOption = .home

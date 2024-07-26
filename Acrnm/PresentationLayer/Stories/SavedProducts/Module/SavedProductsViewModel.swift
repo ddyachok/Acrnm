@@ -51,7 +51,20 @@ final class SavedProductsViewModel: SavedProductsViewModelType, ObservableObject
                 return
             }
             
-            await acrnmRepository.removeProduct(product)
+            await self.acrnmRepository.removeProduct(product)
+                .receive(on: DispatchQueue.main)
+                .sink(receiveCompletion: { completion in
+                    switch completion {
+                    case .failure(let error):
+                        print("Error fetching products: \(error)")
+                        
+                    case .finished:
+                        break
+                    }
+                }, receiveValue: { [weak self] _ in
+                    self?.products.removeAll(where: { $0.title == product.title })
+                })
+                .store(in: &cancellables)
         }
     }
 }

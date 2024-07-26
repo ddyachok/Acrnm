@@ -9,7 +9,9 @@ import Foundation
 
 protocol ProductDetailsViewModelType: ObservableObject {
     var product: ProductModel { get }
+    var isProductSaved: Bool { get }
     
     func saveProduct()
     func removeProduct()
+    func fetchLatestProductData()
 }

@@ -14,6 +14,7 @@ final class ProductDetailsViewModel: ProductDetailsViewModelType {
     // MARK: - Properties (public) -
     
     @Published var product: ProductModel
+    @Published var isProductSaved: Bool = false
     
     // MARK: - Injects -
     
@@ -36,6 +37,19 @@ final class ProductDetailsViewModel: ProductDetailsViewModelType {
             }
             
             await self.acrnmRepository.saveProduct(self.product)
+                .receive(on: DispatchQueue.main)
+                .sink(receiveCompletion: { completion in
+                    switch completion {
+                    case .failure(let error):
+                        print("Error fetching products: \(error)")
+                        
+                    case .finished:
+                        break
+                    }
+                }, receiveValue: { [weak self] products in
+                    self?.isProductSaved.toggle()
+                })
+                .store(in: &cancellables)
         }
     }
     
@@ -46,6 +60,42 @@ final class ProductDetailsViewModel: ProductDetailsViewModelType {
             }
             
             await self.acrnmRepository.removeProduct(self.product)
+                .receive(on: DispatchQueue.main)
+                .sink(receiveCompletion: { completion in
+                    switch completion {
+                    case .failure(let error):
+                        print("Error fetching products: \(error)")
+                        
+                    case .finished:
+                        break
+                    }
+                }, receiveValue: { [weak self] products in
+                    self?.isProductSaved.toggle()
+                })
+                .store(in: &cancellables)
+        }
+    }
+    
+    func fetchLatestProductData() {
+        Task { [weak self] in
+            guard let self else {
+                return
+            }
+            
+            await self.acrnmRepository.fetchSavedProduct(by: self.product.title)
+                .receive(on: DispatchQueue.main)
+                .sink(receiveCompletion: { completion in
+                    switch completion {
+                    case .failure(let error):
+                        print("Error fetching products: \(error)")
+                        
+                    case .finished:
+                        break
+                    }
+                }, receiveValue: { [weak self] product in
+                    self?.isProductSaved = product != nil
+                })
+                .store(in: &cancellables)
         }
     }
 }

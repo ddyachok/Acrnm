@@ -17,29 +17,32 @@ struct SavedProductCell: View {
     // MARK: - Body -
     
     var body: some View {
-        HStack(spacing: 0) {
-            ZStack {
-                Color.white
-                    .frame(width: 50, height: 80)
-
-                if let imageUrl = product.images.first {
-                    URLImage(imageUrl ?? URL.picturesDirectory) { image in
-                        image
+        ZStack {
+            Color.white
+            
+            HStack(spacing: 0) {
+                ZStack {
+                    Color.white
+                        .frame(width: 100, height: 150)
+                    
+                    if let imageUrl = product.images.first {
+                        URLImage(imageUrl ?? URL.picturesDirectory) { image in
+                            image
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: 100, height: 150)
+                        }
+                    }
+                    else {
+                        Image(uiImage: .J_118_WS_EX_1)
                             .resizable()
                             .aspectRatio(contentMode: .fill)
-                            .frame(width: 50, height: 80)
+                            .frame(width: 100, height: 150)
                     }
                 }
-                else {
-                    Image(uiImage: .J_118_WS_EX_1)
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(width: 50, height: 80)
-                }
+                
+                UnitCellView(product: product, shouldRemove: true)
             }
-            
-            UnitCellView(product: product)
-                .frame(height: 80)
         }
     }
 }

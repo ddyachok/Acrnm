@@ -24,11 +24,11 @@ struct SavedProductsView<VM: SavedProductsViewModelType>: View {
     // MARK: - Properties (public)
     
     @StateObject var viewModel: VM
+    @ObservedObject var router: Router<HomeRoute>
     
     // MARK: - Properties (private)
     
     @EnvironmentObject private var appRootManager: AppRootManager
-    @StateObject private var router: Router<SavedProductsRoute> = .init()
     
     @StateObject private var sideMenuOptions = NSideMenuOptions(style: .slideAside)
     @State private var selectedSideMenuOption: SideBarOption = .savedItems
@@ -36,7 +36,7 @@ struct SavedProductsView<VM: SavedProductsViewModelType>: View {
     // MARK: - Body
     
     var body: some View {
-        NavigationStack {
+        RoutingView(stack: $router.stack) {
             NSideMenuView(options: sideMenuOptions) {
                 Menu {
                     SideBarView(selectedOption: $selectedSideMenuOption, alignment: .leading)
@@ -100,12 +100,33 @@ struct SavedProductsView<VM: SavedProductsViewModelType>: View {
                 ForEach(viewModel.products) { product in
                     SavedProductCell(product: product)
                         .onTapGesture {
-                            router.navigate(to: .details(product: product))
+                            router.navigate(to: .details(product: product, router: router))
+                        }
+                        .overlay {
+                            HStack {
+                                Spacer()
+                                
+                                VStack {
+                                    Spacer()
+                                    ZStack {
+                                        Color(.smokyBlack)
+                                            .frame(width: 48, height: 48)
+                                        
+                                            Image(.removeIcon)
+                                                .foregroundColor(Asset.Colors.Neutral.white.swiftUIColor)
+                                                .padding()
+                                                .onTapGesture {
+                                                    viewModel.removeProduct(product)
+                                                }
+                                    }
+                                    Spacer()
+                                }
+                            }
                         }
                 }
                 .padding([.leading, .trailing], 28)
             }
-            .padding(.bottom, 24)
+            .padding([.top, .bottom], 24)
         }
         .onAppear {
             Task {
@@ -162,6 +183,6 @@ struct SavedProductsView<VM: SavedProductsViewModelType>: View {
 struct SavedProductsView_Previews: PreviewProvider {
     static var previews: some View {
         let viewModel = SavedProductsViewModel()
-        SavedProductsView(viewModel: viewModel)
+        SavedProductsView(viewModel: viewModel, router: Router<HomeRoute>.init())
     }
 }

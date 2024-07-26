@@ -148,8 +148,6 @@ struct ProductsListView<VM: ProductsListViewModelType>: View {
                 router.navigateToRoot()
             }
             
-            selectedSideMenuOption = .home
-            
         case .items:
             if sideMenuOptions.show {
                 sideMenuOptions.toggleMenu()

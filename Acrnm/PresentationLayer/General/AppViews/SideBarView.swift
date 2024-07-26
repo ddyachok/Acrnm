@@ -82,7 +82,7 @@ struct SideBarView: View {
     private func foregroundColor(for option: SideBarOption) -> Color {
         selectedOption == option ?
         Asset.Colors.Neutral.white.swiftUIColor :
-        Asset.Colors.Neutral.wdGray.swiftUIColor
+        Asset.Colors.Neutral.acrGray.swiftUIColor
     }
 }
 
